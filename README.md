@@ -29,7 +29,7 @@ The tool consists of the project folder (RaToViTo), which includes two Jupyter n
 
 There are two notebooks, both following the same general structure but differing in their computational approach:
 
-Inventory-based simulation: Performs a single, comprehensive simulation of the radioactive decay of the entire isotope inventory of spent nuclear fuel. This approach is computationally less demanding but does not provide the same level of detail as the isotope-based simulation.
+Inventory-based simulation: Performs a single, comprehensive simulation of the radioactive decay of the entire isotope inventory of spent nuclear fuel. This approach is computationally less demanding but does not provide the same level of detail as the isotope-based simulation since the radiotoxicities of the daughter nuclides generated from the parent nuclides through natural decay cannot be calculated individually in this approach, cannot therefore not be assigned to the parent nuclides, and thus remain unaccounted for when representing the radiotoxicity of the parent nuclides. However, it is possible to represent the radiotoxicity of the daughter nuclides independently of the parent nuclides.
 
 Isotope-based simulation: Conducts individual simulations for each isotope in the spent fuel inventory. This approach is necessary to explicitly track the daughter isotopes generated from specific parent isotopes (nuclides) due to natural decay. It enables the calculation of the radiotoxicity of the daughter isotopes present alongside their parent isotopes.
 
