@@ -3,27 +3,22 @@ RaToViTo is a tool designed to simulate the evolution of isotope inventories in 
 
 ## Prerequisites
 
-This project requires Miniconda or Anaconda.
-
-    Download and install Miniconda for your operating system:
-    Miniconda Installation Guide
-    Open a new terminal or restart your shell to ensure that conda is available in your PATH.
-
+This project requires Miniconda or Anaconda. Download and install Miniconda for your operating system: https://www.anaconda.com/docs/getting-started/miniconda/main
 
 ## Installation
 
-    Clone the RaToViTo repository to your desired location and navigate to the RaToViTo directory:
-    git clone https://github.com/RaToViTo/RaToViTo
-    cd RaToViTo
+    1. Clone the RaToViTo repository to your desired location and navigate to the RaToViTo directory:
+       git clone https://github.com/RaToViTo/RaToViTo
+       cd RaToViTo
 
-    Create the environment from the environment.yml file:
-    conda env create -f environment.yml
+    2. Create the environment from the environment.yml file:
+       conda env create -f environment.yml
 
-    Activate the ratovito-env environment:
-    conda activate ratovito-env
+    3. Activate the ratovito-env environment:
+       conda activate ratovito-env
 
-    Start Jupyter Notebook:
-    jupyter notebook
+    4. Start Jupyter Notebook:
+       jupyter notebook
 
 
 ## Tool Features
