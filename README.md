@@ -21,7 +21,7 @@ This project requires Miniconda or Anaconda. Download and install Miniconda for 
        jupyter notebook
 
 
-## Tool Features
+## Project content
 
 The tool consists of the project folder (RaToViTo), which includes two Jupyter notebooks (isotope-based simulation.ipynb and inventory-based simulation.ipynb) and four additional subfolders.
 
