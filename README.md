@@ -1,5 +1,5 @@
 # RaToViTo- Radiotoxicity Visualization Tool
-RaToViTo is a tool designed to simulate the evolution of isotope inventories in radioactive waste over time using a decay-only simulation approach powered by the open-source code OpenMC. It calculates radiotoxicities based on dose conversion coefficients for different age groups and provides visualizations of the results. Below, you will find information about system requirements, installation instructions, tool features, and functionality.
+RaToViTo is a tool designed to simulate the evolution of isotope inventories in radioactive waste over time using a decay-only simulation approach powered by the open-source code OpenMC in order to calculate radiotoxicities based on dose conversion coefficients for different age groups for the purpose of visualizing the results in comparison with a reference value. Below, you will find information about system requirements, installation instructions, tool features, and functionality.
 
 ## Prerequisites
 
