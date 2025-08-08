@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this tool, please cite it as below."
+authors:
+  - family-names: "Vogt"
+    given-names: "Y."
+title: "RaToViTo- Radiotoxicity Visualization Tool"
+version: "1.0"
+date-released: "2025-08-07"
+url: "https://github.com/RaToViTo/RaToViTo/"
