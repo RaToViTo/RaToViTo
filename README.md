@@ -6,7 +6,7 @@ RaToViTo is a tool designed to simulate the evolution of isotope inventories in 
 To cite this tool, use the “Cite this repository” button on the right-hand side to access citation formats.<br><br><br>
 
 <p align="center">
-    <img src="Graphs/example_graph.png" alt="Error: no image found" width="80%"><br><br><br>
+    <img src="Graphs/example_graph.png" alt="Error: no image found" width="800"><br><br><br>
 </p>
 
 ## Prerequisites
