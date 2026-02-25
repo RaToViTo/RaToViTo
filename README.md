@@ -58,6 +58,8 @@ Simulation results: Contains result folders named by date and simulation configu
 
 The tool is designed to create customizable radiotoxicity plots based on sample simulation results for two fuel types (UO₂ & MOX; PWR). The sample results were obtained through natural decay simulation and a radiotoxicity calculations (steps 2 & 4). Running these steps is not required to use the tool for generating radiotoxicity plots. They are only necessary for custom simulations (e.g., with different fuel data) or radiotoxicity calculations (e.g., with modified dose conversion coefficients).
 
+##### Note: Step 2 & 4 optional and therefore explained in next section
+
 ### 1. Tool Initialization
 
 At the beginning of each use of the tool, the code cells under the "Initialization" section must be executed to make the tool operational. This includes specifying the files containing the fuel data and dose coefficients, as well as selecting the respective Excel worksheet from which the data will be retrieved.
