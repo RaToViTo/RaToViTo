@@ -70,6 +70,9 @@ def plot_UI(chooser, include_efficiency_inputs=False):
         "eff_hplc": widgets.BoundedFloatText(value=0.96, min=0, max=1, step=0.0001, layout=widgets.Layout(width="140px", height="32px")),
         "eff_chalmex": widgets.BoundedFloatText(value=0.999, min=0, max=1, step=0.0001, layout=widgets.Layout(width="140px", height="32px")),
         "num_cycles": widgets.BoundedIntText(value=10, min=1, max=1000, step=1, layout=widgets.Layout(width="140px", height="32px")),
+        "partition_eff_u": widgets.BoundedFloatText(value=0.9988, min=0, max=1, step=0.0001, layout=widgets.Layout(width="140px", height="32px")),
+        "partition_eff_pu": widgets.BoundedFloatText(value=0.9988, min=0, max=1, step=0.0001, layout=widgets.Layout(width="140px", height="32px")),
+        "partition_eff_ma": widgets.BoundedFloatText(value=0.9999, min=0, max=1, step=0.0001, layout=widgets.Layout(width="140px", height="32px")),
     }
     efficiency_labels = {
         "eff_purex": "PUREX:",
@@ -77,6 +80,9 @@ def plot_UI(chooser, include_efficiency_inputs=False):
         "eff_hplc": "PUREX+HPLC:",
         "eff_chalmex": "CHALMEX:",
         "num_cycles": "Fuel cycles:",
+        "partition_eff_u": "U separation:",
+        "partition_eff_pu": "Pu separation:",
+        "partition_eff_ma": "MA separation:",
     }
     efficiency_rows = {
         key: widgets.HBox([
@@ -91,16 +97,61 @@ def plot_UI(chooser, include_efficiency_inputs=False):
     ], layout=widgets.Layout(display="none", margin="4px 0 8px 0"))
 
     def update_efficiency_visibility(change=None):
-        selected_scenarios = {name for name in scenario_names if checkboxes[name].value}
-        efficiency_panel.layout.display = "" if selected_scenarios else "none"
-        efficiency_rows["eff_purex"].layout.display = "" if "PUREX" in selected_scenarios else "none"
-        efficiency_rows["eff_isanex"].layout.display = "" if "PUREX+iSANEX" in selected_scenarios else "none"
-        efficiency_rows["eff_hplc"].layout.display = "" if "PUREX+HPLC" in selected_scenarios else "none"
-        efficiency_rows["eff_chalmex"].layout.display = "" if "CHALMEX" in selected_scenarios else "none"
-        efficiency_rows["num_cycles"].layout.display = "" if selected_scenarios else "none"
+        selected_scenarios = {
+            name for name in scenario_names
+            if checkboxes[name].value
+        }
 
-    for scenario_name in scenario_names:
-        checkboxes[scenario_name].observe(update_efficiency_visibility, names="value")
+        selected_residuals = (
+            checkboxes["U res."].value
+            or checkboxes["Pu res."].value
+            or checkboxes["MA res."].value
+        )
+
+        efficiency_panel.layout.display = (
+            "" if selected_scenarios or selected_residuals else "none"
+        )
+
+        efficiency_rows["eff_purex"].layout.display = (
+            "" if "PUREX" in selected_scenarios else "none"
+        )
+        efficiency_rows["eff_isanex"].layout.display = (
+            "" if "PUREX+iSANEX" in selected_scenarios else "none"
+        )
+        efficiency_rows["eff_hplc"].layout.display = (
+            "" if "PUREX+HPLC" in selected_scenarios else "none"
+        )
+        efficiency_rows["eff_chalmex"].layout.display = (
+            "" if "CHALMEX" in selected_scenarios else "none"
+        )
+
+        efficiency_rows["num_cycles"].layout.display = (
+            "" if selected_scenarios else "none"
+        )
+
+        efficiency_rows["partition_eff_u"].layout.display = (
+            "" if checkboxes["U res."].value else "none"
+        )
+        efficiency_rows["partition_eff_pu"].layout.display = (
+            "" if checkboxes["Pu res."].value else "none"
+        )
+        efficiency_rows["partition_eff_ma"].layout.display = (
+            "" if checkboxes["MA res."].value else "none"
+        )
+
+
+    for name in scenario_names:
+        checkboxes[name].observe(
+            update_efficiency_visibility,
+            names="value"
+        )
+
+    for name in ["U res.", "Pu res.", "MA res."]:
+        checkboxes[name].observe(
+            update_efficiency_visibility,
+            names="value"
+        )
+
 
     # === ANFANG: AUSKOMMENTIERTER TEIL FÜR INDIVIDUAL ISOTOPES ===
     # Das Laden und Erstellen der Isotope-UI wurde hier entfernt/auskommentiert.
