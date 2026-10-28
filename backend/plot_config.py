@@ -11,8 +11,8 @@ plot_config = {
     "linewidth" : 2.0,
 
     #Figure size
-    "fig_width" : 12,
-    "fig_height" : 7,
+    "fig_width" : 10,
+    "fig_height" : 10,
 
     #Axis
     "plot_axis_range_x" : [1e0, 1e6],
