@@ -24,10 +24,13 @@ Miniconda or Anaconda required. Download and install Miniconda for your operatin
     2. Create the environment from the environment.yml file:
        conda env create -f environment.yml
 
-    3. Activate the ratovito-env environment:
+    (3. On Windows: Start Ubuntu (WSL2 needed):
+        wsl -d Ubuntu)
+
+    4. Activate the ratovito-env environment:
        conda activate ratovito-env
 
-    4. Start Jupyter Notebook:
+    5. Start Jupyter Notebook:
        jupyter notebook
 
 
