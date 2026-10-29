@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 from IPython.display import Image, display
+from matplotlib.ticker import LogLocator
 
 def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
          selected_DC, save_plot, offset, plot_config, ref_values, ref_config,
@@ -354,8 +355,19 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
             plt.legend(loc=plot_config["plot_legend_loc"],
                        prop={'size': plot_config["legend_fontsize"], 'family': plot_config["font_name"]})
 
+    
+    if plot_config.get("show_line_labels", False):
+        for line in plt.gca().get_lines():
+            label = line.get_label()
+            if label in plot_config.get("line_labels", {}):
+                pos = plot_config["line_labels"][label]
+                plt.text(pos["x"], pos["y"], label, color=plot_config["line_label_color"] or line.get_color(), fontsize=plot_config["line_label_fontsize"])
+    
+    plt.gca().xaxis.set_major_locator(LogLocator(numticks=plot_config["xaxis_ticks"]))
+    plt.gca().yaxis.set_major_locator(LogLocator(numticks=plot_config["yaxis_ticks"]))
     plt.xticks(fontsize=plot_config["xticks_fontsize"])
     plt.yticks(fontsize=plot_config["yticks_fontsize"])
+    
     plt.grid(visible=plot_config["plot_grid_show"],
              which=plot_config["plot_grid_which"],
              linestyle=plot_config["plot_grid_linestyle"],
