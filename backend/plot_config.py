@@ -18,13 +18,15 @@ plot_config = {
     "plot_axis_range_x" : [1e0, 1e6],
     "plot_axis_range_y" : [1e0, 1e10],
 
-    "xticks_fontsize" : 12,
-    "yticks_fontsize" : 12,
+    "xticks_fontsize" : 14,
+    "yticks_fontsize" : 14,
 
     #Titles; no slashes allowed
+    "show_title": False,
     "plot_title" : f"Radiotoxicity of Spent Fuel incl. Decay Products", 
     #"plot_title" : f"Material sent to final repository",
 
+    "show_subtitle": False,
     #"plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, Adults",
     #"plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, Adults vs. Infants",
     #"plot_subtitle" : "SF at discharge, MOX, 65 GWd/t, Infants",
@@ -41,8 +43,8 @@ plot_config = {
     #Font name and sizes
     "font_name" : 'DejaVu Sans',
     "title_fontsize" : 14,
-    "label_fontsize" : 13,
-    "legend_fontsize" : 10,
+    "label_fontsize" : 18,
+    "legend_fontsize" : 14,
     "subtitle_fontsize" : 12,
     "linewidth": 2,
 

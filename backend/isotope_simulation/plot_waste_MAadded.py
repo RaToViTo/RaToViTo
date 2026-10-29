@@ -340,9 +340,10 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
     plt.ylim(plot_config["plot_axis_range_y"])
     plt.xlabel(plot_config["plot_xlabel"], fontsize=plot_config["label_fontsize"], fontname=plot_config["font_name"])
     plt.ylabel(plot_config["plot_ylabel"], fontsize=plot_config["label_fontsize"], fontname=plot_config["font_name"])
-    plt.title(plot_config["plot_title"], fontsize=plot_config["title_fontsize"], fontname=plot_config["font_name"], pad=26, loc='center')
-    plt.suptitle(plot_config["plot_subtitle"], fontsize=plot_config["subtitle_fontsize"], fontname=plot_config["font_name"], y=0.91, x=0.511)
+    if plot_config.get("show_title", False): plt.title(plot_config["plot_title"], fontsize=plot_config["title_fontsize"], fontname=plot_config["font_name"], pad=26, loc="center")
+    if plot_config.get("show_subtitle", False): plt.suptitle(plot_config["plot_subtitle"], fontsize=plot_config["subtitle_fontsize"], fontname=plot_config["font_name"], y=0.91, x=0.511)
 
+    
     if plot_config.get("show_legend", True):
         if plot_config["legend_outside"]:
             plt.legend(loc=plot_config["plot_legend_loc"],
