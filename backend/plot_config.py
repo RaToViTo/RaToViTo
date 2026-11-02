@@ -30,7 +30,7 @@ plot_config = {
 
     "show_subtitle": True,
     #"plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, Adults",
-    "plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, n$_{repro. cyc.}$=10, Adults vs. Infants",
+    "plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, n$_{repro. cyc.}$=10, Adults",
     #"plot_subtitle" : "SF at discharge, MOX, 65 GWd/t, Infants",
     #"plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, n$_{repro. cyc.}$=10, Adults",
 
@@ -58,17 +58,19 @@ plot_config = {
 
     #Line labels
     "show_line_labels": True,
-    "line_label_fontsize": 4.5,
+    "line_label_fontsize": 4.3,
     "line_label_color": "black",
     "line_labels": {
         #"Total": {"x": 5e1, "y": 4e8},
         #"Plutonium": {"x": 1.2e0, "y": 180e6},
         #"Pu res.": {"x": 1e2, "y": 1e4},
-        "Minor Actinides": {"x": 3e2, "y": 3e6},
+        #"Minor Actinides Adults": {"x": 5e2, "y": 2.3e6},
+        #"Minor Actinides Infants": {"x": 1.3e3, "y": 4e7},
         #"MA res.": {"x": 1e2, "y": 1e4},
         #"Uranium": {"x": 1.3e1, "y": 4e3},
         #"U res.": {"x": 1e2, "y": 1e4},
-        "Fission products": {"x": 5e2, "y": 1.5e4},
+        "Fission products": {"x": 6.3e2, "y": 5.8e3},
+        #"Fission products Infants": {"x": 6.8e1, "y": 7.7e8},
         #"FPs + res.": {"x": 1e2, "y": 1e4},
         #"Americium": {"x": 1e2, "y": 1e4},
         #"Curium": {"x": 1e2, "y": 1e4},
@@ -78,10 +80,10 @@ plot_config = {
         #"PUREX+iSANEX": {"x": 1e2, "y": 1e4},
         #"PUREX+HPLC": {"x": 1e2, "y": 1e4},
         #"CHALMEX": {"x": 1e2, "y": 1e4},
-        "Natural U (8.41t) Adults": {"x": 1.5e0, "y": 4e5},
-        "Natural U (8.41t) Infants": {"x": 1.5e0, "y": 8.5e6},
-        #"McArthur River/Key Lake": {"x": 1.5e0, "y": 5e3},
-        #"Inkai": {"x": 1.5e0, "y": 5e1},
+        "Nat. U (8.41t) Adults": {"x": 1.3e0, "y": 3.4e5},
+        #"Nat. U (8.41t) Infants": {"x": 1.3e0, "y": 8.5e6},
+        "McArthur River/Key Lake": {"x": 1.5e0, "y": 5e3},
+        "Inkai": {"x": 1.5e0, "y": 5e1},
     },
     
     #Grid

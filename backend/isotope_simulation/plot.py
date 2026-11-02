@@ -1,32 +1,40 @@
 import os
 import pickle
+from io import BytesIO
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 from IPython.display import Image, display
+from matplotlib.ticker import LogLocator
 
 def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
-         selected_DC, plot_config, ref_values, ref_config,
+         selected_DC, save_plot, offset, plot_config, ref_values, ref_config,
          partition_eff_u, partition_eff_pu, partition_eff_ma,
          scenario_colors=None,
-         show_fp2=False, second_fp_path=None, fp2_colorpicker=None, fp2_label=None, fp2_linestyle=None, fp2_marker=None,
+         show_fp2=None, second_fp_path=None, fp2_colorpicker=None, fp2_label=None, fp2_linestyle=None, fp2_marker=None,
          show_ma2=False, ma2_path=None, ma2_colorpicker=None, ma2_label=None, ma2_linestyle=None, ma2_marker=None,
          show_pu2=False, pu2_path=None, pu2_colorpicker=None, pu2_label=None, pu2_linestyle=None, pu2_marker=None,
          show_total2=False, total2_path=None, total2_colorpicker=None, total2_label=None, total2_linestyle=None, total2_marker=None,
-         eff_purex=None, eff_isanex=None, eff_hplc=None, eff_chalmex=None, num_cycles=None):
-    
-    save_plot = plot_config.get("save_plot", False)
-    offset = plot_config.get("offset", 0)
+         # --- NEUE PARAMETER ---
+         eff_purex=0.9988, eff_isanex=0.999, eff_hplc=0.96, eff_chalmex=0.999, num_cycles=10,
+         additional_datasets=None):
+
+    selected_path = chooser.selected_path
+    if selected_path is None:
+        raise ValueError(
+            "No simulation results folder selected. Select a folder in section 3, "
+            "then rerun the plot cell."
+        )
 
     # --- TIME STEPS ---
-    time_steps_path = os.path.join(chooser.selected_path, "time_steps.pkl")
+    time_steps_path = os.path.join(selected_path, "time_steps.pkl")
     with open(time_steps_path, "rb") as f:
         time_steps = pickle.load(f)
 
     # --- LOAD RT DATA ---
     rt_data = {}
-    for folder in os.listdir(chooser.selected_path):
-        folder_path = os.path.join(chooser.selected_path, folder)
+    for folder in os.listdir(selected_path):
+        folder_path = os.path.join(selected_path, folder)
         if os.path.isdir(folder_path) and folder.startswith("depletion_"):
             rt_file = os.path.join(folder_path, "RT.pkl")
             if os.path.exists(rt_file):
@@ -170,6 +178,7 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
         linestyle_map[fp2_label] = fp2_linestyle.value if fp2_linestyle is not None else '-'
         marker_map[fp2_label] = fp2_marker.value if fp2_marker is not None else 'none'
 
+
         if fp2_label not in selected_items:
             selected_items.append(fp2_label)
 
@@ -213,6 +222,79 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
 
         if total2_label not in selected_items:
             selected_items.append(total2_label)
+
+    # --- Additional datasets configured in plot_UI ---
+    additional_curve_values = []
+
+    def unique_curve_label(label):
+        candidate = label
+        suffix = 2
+        while candidate in group_rt or candidate in selected_items:
+            candidate = f"{label} ({suffix})"
+            suffix += 1
+        return candidate
+
+    for config in additional_datasets or []:
+        if config.get("row_type") != "dataset":
+            continue
+
+        dataset_path = config["path"].selected_path
+        if not dataset_path:
+            continue
+
+        additional_rt = {}
+        for folder in os.listdir(dataset_path):
+            folder_path = os.path.join(dataset_path, folder)
+            if not os.path.isdir(folder_path) or not folder.startswith("depletion_"):
+                continue
+            rt_file = os.path.join(folder_path, "RT.pkl")
+            if not os.path.exists(rt_file):
+                continue
+            with open(rt_file, "rb") as f:
+                rt_dict = pickle.load(f)
+            additional_rt[folder.replace("depletion_", "")] = np.array(rt_dict.get("RT_sum", []))
+
+        dataset_type = config["type"].value
+        if dataset_type == "FP":
+            isotopes = [iso for iso in additional_rt if iso not in all_group_isotopes]
+        elif dataset_type == "MA":
+            isotopes = [iso for iso in groups["Minor Actinides"] if iso in additional_rt]
+        elif dataset_type == "Pu":
+            isotopes = [iso for iso in groups["Plutonium"] if iso in additional_rt]
+        else:
+            isotopes = list(additional_rt)
+
+        for isotope in isotopes:
+            values = additional_rt[isotope]
+            if values.shape != time_steps.shape:
+                raise ValueError(
+                    f"Additional dataset '{dataset_path}' has {values.size} values for "
+                    f"{time_steps.size} time steps in isotope '{isotope}'."
+                )
+
+        curve = sum((additional_rt[iso] for iso in isotopes), np.zeros_like(time_steps))
+
+        custom_label = config["label"].value.strip()
+        default_label = f"{dataset_type} ({os.path.basename(os.path.normpath(dataset_path))})"
+        label = unique_curve_label(custom_label or default_label)
+        group_rt[label] = curve
+        color_map[label] = config["color"].value
+        linestyle_map[label] = config["linestyle"].value
+        marker_map[label] = config["marker"].value or "none"
+        selected_items.append(label)
+        additional_curve_values.append(curve)
+
+    sum_config = next(
+        (config for config in additional_datasets or [] if config.get("row_type") == "sum"),
+        None,
+    )
+    if sum_config is not None and additional_curve_values:
+        label = unique_curve_label("Sum of additionals")
+        group_rt[label] = sum(additional_curve_values, np.zeros_like(time_steps))
+        color_map[label] = sum_config["color"].value
+        linestyle_map[label] = sum_config["linestyle"].value
+        marker_map[label] = sum_config["marker"].value or "none"
+        selected_items.append(label)
 
     # --- TOTAL (nur Hauptdatensatz, NICHT additional) ---
     if "Total" in selected_items:
@@ -335,7 +417,7 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
     if plot_config["show_footnote"]:
         fig.subplots_adjust(bottom=0.15)
         fig.text(0.91, 0.02, plot_config["footnote_text"],
-                 ha='right', va='bottom', fontsize=12)
+                 ha='right', va='bottom', fontsize=4)
 
     plt.xscale('log')
     plt.yscale('log')
@@ -343,8 +425,9 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
     plt.ylim(plot_config["plot_axis_range_y"])
     plt.xlabel(plot_config["plot_xlabel"], fontsize=plot_config["label_fontsize"], fontname=plot_config["font_name"])
     plt.ylabel(plot_config["plot_ylabel"], fontsize=plot_config["label_fontsize"], fontname=plot_config["font_name"])
-    plt.title(plot_config["plot_title"], fontsize=plot_config["title_fontsize"], fontname=plot_config["font_name"], pad=26, loc='center')
-    plt.suptitle(plot_config["plot_subtitle"], fontsize=plot_config["subtitle_fontsize"], fontname=plot_config["font_name"], y=0.91, x=0.511)
+    if plot_config.get("show_title", False): plt.title(plot_config["plot_title"], fontsize=plot_config["title_fontsize"], fontname=plot_config["font_name"], pad=10, loc="center")
+    if plot_config.get("show_subtitle", False): plt.suptitle(plot_config["plot_subtitle"], fontsize=plot_config["subtitle_fontsize"], fontname=plot_config["font_name"], y=0.91, x=0.511)
+
 
     if plot_config.get("show_legend", True):
         if plot_config["legend_outside"]:
@@ -356,26 +439,42 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
             plt.legend(loc=plot_config["plot_legend_loc"],
                        prop={'size': plot_config["legend_fontsize"], 'family': plot_config["font_name"]})
 
+
+    if plot_config.get("show_line_labels", False):
+        for label, pos in plot_config.get("line_labels", {}).items():
+            plt.text(
+                pos["x"],
+                pos["y"],
+                label,
+                color=plot_config.get("line_label_color") or "black",
+                fontsize=plot_config.get("line_label_fontsize", 10)
+            )
+
+    plt.gca().xaxis.set_major_locator(LogLocator(numticks=plot_config["xaxis_ticks"]))
+    plt.gca().yaxis.set_major_locator(LogLocator(numticks=plot_config["yaxis_ticks"]))
     plt.xticks(fontsize=plot_config["xticks_fontsize"])
     plt.yticks(fontsize=plot_config["yticks_fontsize"])
+
     plt.grid(visible=plot_config["plot_grid_show"],
              which=plot_config["plot_grid_which"],
              linestyle=plot_config["plot_grid_linestyle"],
              linewidth=plot_config["plot_grid_linewidth"])
 
-    graphs_folder = os.path.join(os.getcwd(), "Graphs")
-    if not os.path.exists(graphs_folder):
-        os.makedirs(graphs_folder)
-
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    plot_name = f'{timestamp}_{selected_sheet}_{selected_DC}_{plot_config["plot_title"]}.png'
-    plot_path = os.path.join(graphs_folder, plot_name)
+    image_buffer = BytesIO()
+    inline_dpi = max(plot_config["dpi"], 600)
+    fig.savefig(image_buffer, format="png", dpi=inline_dpi, bbox_inches="tight")
+    image_data = image_buffer.getvalue()
 
     if save_plot:
-        plt.savefig(plot_path, dpi=plot_config["dpi"], bbox_inches='tight')
-        plt.close()
-        display(Image(plot_path, width=1000))
-    else:
-        plt.show()
+        graphs_folder = os.path.join(os.getcwd(), "graphs")
+        os.makedirs(graphs_folder, exist_ok=True)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        plot_name = f'{timestamp}_{selected_sheet}_{selected_DC}_{plot_config["plot_title"]}.png'
+        plot_path = os.path.join(graphs_folder, plot_name)
+        with open(plot_path, "wb") as image_file:
+            image_file.write(image_data)
+
+    display(Image(data=image_data, width=1000))
+    plt.close(fig)
 
     return group_rt, time_steps + offset
