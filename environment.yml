@@ -1,0 +1,12 @@
+name: ratovito-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - setuptools<82
+  - ipykernel
+  - jupyter
+  - openmc
+  - openpyxl
+  - ipyfilechooser
+  - pandas
