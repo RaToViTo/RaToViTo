@@ -287,6 +287,7 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
             group_rt["CHALMEX"] = fps_scenario + num_cycles * u_pu_sum * (1 - eff_purex) + num_cycles * chalmex_ma_sum * (1 - eff_chalmex)
 
     # --- PLOTTING ---
+    plt.rcParams["font.family"] = plot_config["font_name"]
     fig = plt.figure(figsize=(plot_config["fig_width"], plot_config["fig_height"]), dpi=plot_config["dpi"])
 
     # Plot der ausgewählten Items (inkl. Fission Products mit hoher zorder)

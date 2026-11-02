@@ -15,7 +15,8 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
          show_pu2=False, pu2_path=None, pu2_colorpicker=None, pu2_label=None, pu2_linestyle=None, pu2_marker=None,
          show_total2=False, total2_path=None, total2_colorpicker=None, total2_label=None, total2_linestyle=None, total2_marker=None,
          # --- NEUE PARAMETER ---
-         eff_purex=0.9988, eff_isanex=0.999, eff_hplc=0.96, eff_chalmex=0.999, num_cycles=10):
+         eff_purex=0.9988, eff_isanex=0.999, eff_hplc=0.96, eff_chalmex=0.999, num_cycles=10,
+         additional_datasets=None):
 
     # --- TIME STEPS ---
     time_steps_path = os.path.join(chooser.selected_path, "time_steps.pkl")
@@ -214,6 +215,79 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
         if total2_label not in selected_items:
             selected_items.append(total2_label)
 
+    # --- Additional datasets configured in plot_UI_new ---
+    additional_curve_values = []
+
+    def unique_curve_label(label):
+        candidate = label
+        suffix = 2
+        while candidate in group_rt or candidate in selected_items:
+            candidate = f"{label} ({suffix})"
+            suffix += 1
+        return candidate
+
+    for config in additional_datasets or []:
+        if config.get("row_type") != "dataset":
+            continue
+
+        dataset_path = config["path"].selected_path
+        if not dataset_path:
+            continue
+
+        additional_rt = {}
+        for folder in os.listdir(dataset_path):
+            folder_path = os.path.join(dataset_path, folder)
+            if not os.path.isdir(folder_path) or not folder.startswith("depletion_"):
+                continue
+            rt_file = os.path.join(folder_path, "RT.pkl")
+            if not os.path.exists(rt_file):
+                continue
+            with open(rt_file, "rb") as f:
+                rt_dict = pickle.load(f)
+            additional_rt[folder.replace("depletion_", "")] = np.array(rt_dict.get("RT_sum", []))
+
+        dataset_type = config["type"].value
+        if dataset_type == "FP":
+            isotopes = [iso for iso in additional_rt if iso not in all_group_isotopes]
+        elif dataset_type == "MA":
+            isotopes = [iso for iso in groups["Minor Actinides"] if iso in additional_rt]
+        elif dataset_type == "Pu":
+            isotopes = [iso for iso in groups["Plutonium"] if iso in additional_rt]
+        else:
+            isotopes = list(additional_rt)
+
+        for isotope in isotopes:
+            values = additional_rt[isotope]
+            if values.shape != time_steps.shape:
+                raise ValueError(
+                    f"Additional dataset '{dataset_path}' has {values.size} values for "
+                    f"{time_steps.size} time steps in isotope '{isotope}'."
+                )
+
+        curve = sum((additional_rt[iso] for iso in isotopes), np.zeros_like(time_steps))
+
+        custom_label = config["label"].value.strip()
+        default_label = f"{dataset_type} ({os.path.basename(os.path.normpath(dataset_path))})"
+        label = unique_curve_label(custom_label or default_label)
+        group_rt[label] = curve
+        color_map[label] = config["color"].value
+        linestyle_map[label] = config["linestyle"].value
+        marker_map[label] = config["marker"].value or "none"
+        selected_items.append(label)
+        additional_curve_values.append(curve)
+
+    sum_config = next(
+        (config for config in additional_datasets or [] if config.get("row_type") == "sum"),
+        None,
+    )
+    if sum_config is not None and additional_curve_values:
+        label = unique_curve_label("Sum of additionals")
+        group_rt[label] = sum(additional_curve_values, np.zeros_like(time_steps))
+        color_map[label] = sum_config["color"].value
+        linestyle_map[label] = sum_config["linestyle"].value
+        marker_map[label] = sum_config["marker"].value or "none"
+        selected_items.append(label)
+
     # --- TOTAL (nur Hauptdatensatz, NICHT additional) ---
     if "Total" in selected_items:
         group_rt["Total"] = sum(rt_data.values(), np.zeros_like(time_steps))
@@ -287,6 +361,7 @@ def plot(chooser, checkboxes, color_pickers, excel_file_fuel, selected_sheet,
             group_rt["CHALMEX"] = fps_scenario + num_cycles * u_pu_sum * (1 - eff_purex) + num_cycles * chalmex_ma_sum * (1 - eff_chalmex)
 
     # --- PLOTTING ---
+    plt.rcParams["font.family"] = plot_config["font_name"]
     fig = plt.figure(figsize=(plot_config["fig_width"], plot_config["fig_height"]), dpi=plot_config["dpi"])
 
     # Plot der ausgewählten Items (inkl. Fission Products mit hoher zorder)

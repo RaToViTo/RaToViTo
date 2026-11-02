@@ -40,7 +40,7 @@ plot_config = {
     #Footnote
     "show_footnote" : True,
     #"footnote_text" : "IHM = Initial Heavy Metal\nSF = Spent Fuel\nPart. eff.s: U = 99.9%, Pu = 99.5%, MA = 99.95%",
-    "footnote_text" : "Part. eff.s: U = 99.88%,\nPu = 99.88%, MA = varied",
+    "footnote_text" : "Part. eff.s: U = 99.88%,\nPu = 99.88%, MA = 99.99%",
 
     #Font name and sizes
     "font_name" : 'DejaVu Sans',
@@ -79,7 +79,7 @@ plot_config = {
         #"PUREX+HPLC": {"x": 1e2, "y": 1e4},
         #"CHALMEX": {"x": 1e2, "y": 1e4},
         "Natural U (8.41t) Adults": {"x": 1.5e0, "y": 4e5},
-        "Natural U (8.41t) Infants": {"x": 1.5e0, "y": 4e5},
+        "Natural U (8.41t) Infants": {"x": 1.5e0, "y": 8.5e6},
         #"McArthur River/Key Lake": {"x": 1.5e0, "y": 5e3},
         #"Inkai": {"x": 1.5e0, "y": 5e1},
     },

@@ -120,6 +120,7 @@ def plot_inv(project_root, chooser, checkboxes, color_pickers, linestyle_selecto
         )
 
     # --- Plotting ---
+    plt.rcParams["font.family"] = plot_config["font_name"]
     fig = plt.figure(figsize=(plot_config["fig_width"], plot_config["fig_height"]), dpi=plot_config["dpi"])
     for i, (label, data) in enumerate(group_sums.items()):
         if not np.any(data > 0):
