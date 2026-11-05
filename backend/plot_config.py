@@ -30,7 +30,7 @@ plot_config = {
 
     "show_subtitle": True,
     #"plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, Adults",
-    "plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, n$_{repro. cyc.}$=10, Adults",
+    "plot_subtitle" : "SNF at discharge, UO2, 4.5%, 65 GWd/t, n$_{repro. cyc.}$=10, Adults",
     #"plot_subtitle" : "SF at discharge, MOX, 65 GWd/t, Infants",
     #"plot_subtitle" : "SF at discharge, UO2, 4.5%, 65 GWd/t, n$_{repro. cyc.}$=10, Adults",
 
@@ -38,7 +38,7 @@ plot_config = {
     "plot_ylabel" : "Radiotoxicity [Sv/t$_{IHM}$]",
 
     #Footnote
-    "show_footnote" : True,
+    "show_footnote" : False,
     #"footnote_text" : "IHM = Initial Heavy Metal\nSF = Spent Fuel\nPart. eff.s: U = 99.9%, Pu = 99.5%, MA = 99.95%",
     "footnote_text" : "Part. eff.s: U = 99.88%,\nPu = 99.88%, MA = 99.99%",
 
@@ -69,7 +69,7 @@ plot_config = {
         #"MA res.": {"x": 1e2, "y": 1e4},
         #"Uranium": {"x": 1.3e1, "y": 4e3},
         #"U res.": {"x": 1e2, "y": 1e4},
-        "Fission products": {"x": 6.3e2, "y": 5.8e3},
+        "Fission Products": {"x": 5.5e2, "y": 1.5e4},
         #"Fission products Infants": {"x": 6.8e1, "y": 7.7e8},
         #"FPs + res.": {"x": 1e2, "y": 1e4},
         #"Americium": {"x": 1e2, "y": 1e4},
@@ -84,6 +84,7 @@ plot_config = {
         #"Nat. U (8.41t) Infants": {"x": 1.3e0, "y": 8.5e6},
         "McArthur River/Key Lake": {"x": 1.5e0, "y": 5e3},
         "Inkai": {"x": 1.5e0, "y": 5e1},
+        "Theo. clearance value": {"x": 1.5e0, "y": 8e0},
     },
     
     #Grid
